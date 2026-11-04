@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Roastier</title>
+    <meta name="description"
+        content="Roastier is a macOS menu bar app that keeps your Mac awake: switch it on until you're done, or for a set time of up to 12 hours.">
+
+    <meta name="theme-color" content="#fbf6ef" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#15100b" media="(prefers-color-scheme: dark)">
+
+    <meta property="og:title" content="Roastier">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://roastier.af.codes">
+    <meta property="og:description"
+        content="A macOS menu bar app that keeps your Mac awake: switch it on until you're done, or for a set time of up to 12 hours.">
+    <!-- Rendered from og-image/ on the dark theme; re-render it whenever the
+         name, tagline, dark colors or the timed popover capture change
+         (AGENTS.md). -->
+    <meta property="og:image" content="https://roastier.af.codes/images/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt"
+        content="The Roastier app icon, name, and tagline beside its menu bar popover, which is counting down a session with Stay awake switched on, over a coffee-brown glow and rising steam.">
+    <!-- Twitter never reads og:image:alt, so the image is repeated here to give
+         its alt an anchor. -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://roastier.af.codes/images/og-image.png">
+    <meta name="twitter:image:alt"
+        content="The Roastier app icon, name, and tagline beside its menu bar popover, which is counting down a session with Stay awake switched on, over a coffee-brown glow and rising steam.">
+
+    <link rel="icon" href="favicon.png" type="image/png" sizes="96x96">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <link rel="stylesheet" href="styles/index-common.css">
+
+    <link rel="stylesheet" href="styles/index-dark.css" id="theme-dark" media="(prefers-color-scheme: dark)">
+    <link rel="stylesheet" href="styles/index-light.css" id="theme-light"
+        media="(prefers-color-scheme: no-preference), (prefers-color-scheme: light)">
+
+    <script src="scripts/dark-mode.js"></script>
+</head>
+
+<body>
+    <section class="section-hero" id="overview">
+        <!-- A glow from the top, and steam rising up the hero's sides like the
+             wisps over the icon's cup. The SVG slices to the hero's height, so
+             on narrow screens the wisps crop away rather than running under the
+             text. -->
+        <div class="hero-sky" aria-hidden="true">
+            <svg class="steam" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMax slice" focusable="false">
+                <path d="M170 900 C110 800 230 720 170 620 S110 440 170 340 S230 180 170 80"/>
+                <path d="M1030 900 C970 800 1090 720 1030 620 S970 440 1030 340 S1090 180 1030 80"/>
+                <path d="M100 960 C40 860 160 780 100 680 S40 500 100 400"/>
+            </svg>
+        </div>
+
+        <div class="top-brand">
+            <a class="brand-logo" href="https://af.codes" aria-label="af.codes, Aidan Follestad">
+                <img src="https://af.codes/images/af.png" alt="" width="1024" height="1024" decoding="async">
+            </a>
+        </div>
+
+        <div class="top-actions">
+            <button class="top-btn theme-toggle" id="theme-toggle" type="button" aria-label="Dark mode">
+                <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+                <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="container hero-copy">
+            <picture class="app-icon">
+                <source srcset="images/app-icon-dark.png" data-theme="dark" media="(prefers-color-scheme: dark)">
+                <img src="images/app-icon-light.png" alt="" width="256" height="256" decoding="async"
+                    fetchpriority="high">
+            </picture>
+
+            <h1>Roastier</h1>
+            <p class="tagline">
+                Keep your Mac awake from the menu bar. Switch it on until you're done, or for exactly as long as
+                you need.
+            </p>
+
+            <div class="cta-row">
+                <a class="btn-primary"
+                    href="https://github.com/afollestad/Roastier/releases/latest/download/Roastier.app.zip">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    <span class="btn-stack">
+                        <span>Download</span>
+                        <span class="btn-subtext">macOS 26 or later</span>
+                    </span>
+                </a>
+                <a class="btn-ghost" href="https://github.com/afollestad/Roastier">
+                    <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                        <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/>
+                    </svg>
+                    <span class="btn-stack">
+                        <span>View on GitHub</span>
+                        <span class="btn-subtext">Stars appreciated!</span>
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Popover captures ship in both appearances: the dark one is the
+             <source>, so the light one stays the <img> fallback and only the
+             matching appearance downloads. -->
+        <div class="container hero-media">
+            <picture>
+                <source srcset="images/popover-idle-dark.webp" type="image/webp" data-theme="dark"
+                    media="(prefers-color-scheme: dark)">
+                <img class="popover-shot" src="images/popover-idle-light.webp"
+                    alt="The Roastier popover reading “Your Mac can sleep normally”, with Stay awake switched off, the duration slider at Indefinite, and Launch at login and Quit below."
+                    width="652" height="558" decoding="async" fetchpriority="high">
+            </picture>
+        </div>
+    </section>
+
+    <section class="section-feature" id="stay-awake">
+        <div class="container feature-split">
+            <div class="feature-text">
+                <p class="chip">Stay awake</p>
+                <h2>Awake until you say otherwise</h2>
+                <p class="feature-copy">
+                    Switch on Stay awake with the slider at infinity, and your Mac keeps its display on and skips
+                    sleep until you switch it off. The cup in your menu bar fills while it's on.
+                </p>
+            </div>
+            <picture>
+                <source srcset="images/popover-indefinite-dark.webp" type="image/webp" data-theme="dark"
+                    media="(prefers-color-scheme: dark)">
+                <img class="popover-shot" src="images/popover-indefinite-light.webp"
+                    alt="The Roastier popover reading “Keeping your Mac awake”, with Stay awake switched on and the duration slider at Indefinite."
+                    width="652" height="558" loading="lazy" decoding="async">
+            </picture>
+        </div>
+    </section>
+
+    <section class="section-feature" id="timer">
+        <div class="container feature-split feature-split-reverse">
+            <div class="feature-text">
+                <p class="chip">Timer</p>
+                <h2>Or just long enough</h2>
+                <p class="feature-copy">
+                    Slide to any length from 5 minutes to 12 hours. The slider counts down as the time passes, and
+                    your Mac goes back to sleeping normally when it ends.
+                </p>
+            </div>
+            <picture>
+                <source srcset="images/popover-timed-dark.webp" type="image/webp" data-theme="dark"
+                    media="(prefers-color-scheme: dark)">
+                <img class="popover-shot" src="images/popover-timed-light.webp"
+                    alt="The Roastier popover counting down a session with about an hour and a half left, with Stay awake switched on and the duration slider at 1 hr 30 min."
+                    width="652" height="558" loading="lazy" decoding="async">
+            </picture>
+        </div>
+    </section>
+
+    <section class="section-feature" id="details">
+        <div class="container details">
+            <div class="detail">
+                <h2>Launch at login</h2>
+                <p>Turn it on once, and the cup is waiting in your menu bar every time you sign in.</p>
+            </div>
+            <div class="detail">
+                <h2>Updates itself</h2>
+                <p>New versions download in the background, and a session picks up again after the restart.</p>
+            </div>
+            <div class="detail">
+                <h2>Native</h2>
+                <p>A SwiftUI app with a Liquid Glass popover, and no Dock icon or windows to manage.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-feature section-centered" id="under-the-hood">
+        <div class="container">
+            <p class="chip">Under the hood</p>
+            <h2>The same as <code>caffeinate -dims</code></h2>
+            <p class="feature-copy">
+                While it's on, Roastier holds the same power assertions as macOS's own
+                <code>caffeinate</code> command, and releases them the moment it turns off.
+            </p>
+            <table class="assertions">
+                <thead>
+                    <tr>
+                        <th scope="col">Flag</th>
+                        <th scope="col">Assertion</th>
+                        <th scope="col">Stops</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="Flag"><code>-d</code></td>
+                        <td data-label="Assertion"><code>PreventUserIdleDisplaySleep</code></td>
+                        <td data-label="Stops">The display sleeping when you're idle</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Flag"><code>-i</code></td>
+                        <td data-label="Assertion"><code>PreventUserIdleSystemSleep</code></td>
+                        <td data-label="Stops">Your Mac sleeping when you're idle</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Flag"><code>-m</code></td>
+                        <td data-label="Assertion"><code>PreventDiskIdle</code></td>
+                        <td data-label="Stops">Disks idling to save power</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Flag"><code>-s</code></td>
+                        <td data-label="Assertion"><code>PreventSystemSleep</code></td>
+                        <td data-label="Stops">System sleep, while on AC power</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>
+            Built by <a href="https://af.codes">Aidan Follestad</a> &#8226;
+            <a href="https://github.com/afollestad/Roastier">Open source</a>
+            (<a href="https://github.com/afollestad/Roastier/blob/main/LICENSE.md">GPL-3.0</a>)
+        </p>
+    </footer>
+
+    <!-- Do NOT rename this to a generic "back to top" name (jump-to-top, back-to-top,
+         scroll-to-top): ad-block cosmetic filters hide those id/class names, which
+         makes the button vanish in browsers with a content blocker. -->
+    <button class="overview-return" id="overview-return" type="button" aria-label="Scroll to top">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="12" y1="19" x2="12" y2="5"/>
+            <polyline points="5 12 12 5 19 12"/>
+        </svg>
+    </button>
+
+    <script src="scripts/overview-return.js"></script>
+</body>
+
+</html>

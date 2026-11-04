@@ -1,0 +1,53 @@
+/* Dark theme: late-night espresso under a warm coffee glow.
+   Don't forget to update the theme colors in scripts/dark-mode.js if --bg changes,
+   and re-render images/og-image.png, which bakes it in as its canvas. */
+
+:root {
+    color-scheme: dark;
+
+    --bg: #15100b;
+    /* A paler tint of the icon's cream cup, #f1e3d0. */
+    --fg: #f6ede1;
+    /* 9.5:1 on --bg, and 4.8:1 on the ghost button's glass at the glow's strongest
+       point. */
+    --secondary: #c6b5a2;
+    /* The cup in the dark icon, lifted from AccentColor for a dark canvas. */
+    --accent: #d6b38b;
+    /* 9.6:1 on --accent. */
+    --on-accent: #15100b;
+    /* Light enough for text as-is, 9.6:1 on --bg and 6:1 on the glow. */
+    --accent-text: #d6b38b;
+    --hairline: rgba(246, 237, 225, .12);
+    --surface: rgba(255, 255, 255, .04);
+    --chip-bg: var(--accent);
+    --chip-fg: var(--on-accent);
+    /* Behind the logo, at least 3:1 with its main blues, #0057d5 and #0186fb.
+       Matches af.codes. */
+    --logo-circle: #05070d;
+    --glass: rgba(255, 255, 255, .07);
+    --glass-border: rgba(255, 255, 255, .14);
+    --glass-shadow: rgba(0, 0, 0, .35);
+    --icon-shadow: rgba(0, 0, 0, .45);
+    --media-shadow: rgba(0, 0, 0, .55);
+    --popover-rim-shadow: rgba(0, 0, 0, .5);
+    --steam: rgba(241, 227, 208, .07);
+    /* The icon's cream cup through the dark icon's latte; every stop holds at
+       least 5.9:1 at the glow's strongest point. */
+    --title-gradient: linear-gradient(100deg, #f3e6d4 5%, #e2c29c 50%, #d6b38b 95%);
+}
+
+html {
+    background: var(--bg);
+}
+
+.theme-toggle .icon-sun {
+    display: block;
+}
+
+/* AccentColor glowing down from the top, and the dark icon's latte to the
+   right. */
+.hero-sky {
+    background:
+        radial-gradient(ellipse 1100px 560px at 50% 0%, rgba(149, 107, 71, .4) 0%, rgba(149, 107, 71, 0) 100%),
+        radial-gradient(ellipse 700px 420px at 82% 18%, rgba(214, 179, 139, .12) 0%, rgba(214, 179, 139, 0) 100%);
+}
