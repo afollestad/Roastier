@@ -186,6 +186,86 @@ final class AwakeControllerTests {
         #expect(controller.deadline == nil)
     }
 
+    @Test
+    func resumesIndefiniteSessionAfterRelaunch() {
+        let controller = makeController()
+        controller.start()
+        controller.saveSessionForRelaunch()
+
+        clock.now.addTimeInterval(5)
+        let relaunched = makeController()
+        relaunched.resumeSessionAfterRelaunch()
+        #expect(relaunched.isActive)
+        #expect(relaunched.duration == .indefinite)
+        #expect(relaunched.deadline == nil)
+        #expect(savedRelaunchSession == nil)
+    }
+
+    @Test
+    func resumesTimedSessionAtItsOriginalDeadline() async {
+        let controller = makeController()
+        controller.duration = AwakeDuration(step: 6)
+        controller.start()
+        let deadline = controller.deadline
+        clock.now.addTimeInterval(395)
+        controller.saveSessionForRelaunch()
+
+        clock.now.addTimeInterval(5)
+        let relaunched = makeController(sleep: advancingSleep)
+        var steps: [Int] = []
+        clock.onSleep = { [weak relaunched] in
+            steps.append(relaunched?.duration.step ?? -1)
+        }
+        relaunched.resumeSessionAfterRelaunch()
+        #expect(relaunched.isActive)
+        #expect(relaunched.deadline == deadline)
+        #expect(relaunched.duration == AwakeDuration(step: 5))
+
+        await relaunched.expiryTask?.value
+        #expect(clock.sleeps == [.seconds(200)] + Array(repeating: .seconds(300), count: 4))
+        #expect(steps == [5, 4, 3, 2, 1])
+        #expect(clock.now == deadline)
+        #expect(!relaunched.isActive)
+    }
+
+    @Test
+    func ignoresStaleRelaunchSession() {
+        let controller = makeController()
+        controller.start()
+        controller.saveSessionForRelaunch()
+
+        clock.now.addTimeInterval(AwakeController.relaunchSessionMaxAge + 1)
+        let relaunched = makeController()
+        relaunched.resumeSessionAfterRelaunch()
+        #expect(!relaunched.isActive)
+        #expect(savedRelaunchSession == nil)
+    }
+
+    @Test
+    func ignoresRelaunchSessionWhoseDeadlinePassed() {
+        let controller = makeController()
+        controller.duration = AwakeDuration(step: 1)
+        controller.start()
+        clock.now.addTimeInterval(290)
+        controller.saveSessionForRelaunch()
+
+        clock.now.addTimeInterval(20)
+        let relaunched = makeController()
+        relaunched.resumeSessionAfterRelaunch()
+        #expect(!relaunched.isActive)
+        #expect(savedRelaunchSession == nil)
+    }
+
+    @Test
+    func savingWhileInactiveWritesNothing() {
+        makeController().saveSessionForRelaunch()
+        #expect(savedRelaunchSession == nil)
+    }
+
+    private var savedRelaunchSession: Any? {
+        defaults.object(forKey: AwakeController.relaunchSessionDefaultsKey)
+    }
+
     /// Returns at once, advancing `clock` by the requested time.
     private var advancingSleep: AwakeController.Sleep {
         let clock = clock

@@ -10,15 +10,19 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     static let idleImageName = "CoffeeMenuBarIdleTemplate"
 
     private let launchAtLogin: LaunchAtLogin
+    private let updates: AppUpdateManager
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private let popover = NSPopover()
     private var iconTask: Task<Void, Never>?
 
-    init(awake: AwakeController, launchAtLogin: LaunchAtLogin) {
+    init(awake: AwakeController, launchAtLogin: LaunchAtLogin, updates: AppUpdateManager) {
         self.launchAtLogin = launchAtLogin
+        self.updates = updates
         super.init()
 
-        let hostingController = NSHostingController(rootView: PopoverView(awake: awake, launchAtLogin: launchAtLogin))
+        let hostingController = NSHostingController(
+            rootView: PopoverView(awake: awake, launchAtLogin: launchAtLogin, updates: updates)
+        )
         hostingController.sizingOptions = .preferredContentSize
         popover.contentViewController = hostingController
         popover.behavior = .transient
@@ -28,18 +32,18 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
             button.target = self
             button.action = #selector(togglePopover(_:))
             button.setAccessibilityLabel("Caffeinate")
-            button.toolTip = "Caffeinate"
         }
-        updateIcon(isActive: awake.isActive)
+        updateIcon(StatusItemIcon(isActive: awake.isActive, badge: updates.badge))
         iconTask = Task { [weak self] in
-            for await isActive in Observations({ awake.isActive }) {
-                self?.updateIcon(isActive: isActive)
+            for await icon in Observations({ StatusItemIcon(isActive: awake.isActive, badge: updates.badge) }) {
+                self?.updateIcon(icon)
             }
         }
     }
 
     func popoverDidClose(_ notification: Notification) {
         statusItem.button?.highlight(false)
+        updates.dismissManualCheckFeedback()
     }
 
     @objc private func togglePopover(_ sender: NSStatusBarButton) {
@@ -55,24 +59,17 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
         sender.highlight(true)
     }
 
-    private func updateIcon(isActive: Bool) {
+    private func updateIcon(_ icon: StatusItemIcon) {
         guard let button = statusItem.button else {
             return
         }
-        let image: NSImage?
-        if let named = NSImage(named: isActive ? Self.activeImageName : Self.idleImageName) {
-            // The active icon keeps its own teal/mint colors; macOS tints the idle one.
-            named.isTemplate = !isActive
-            image = named
-        } else {
-            // Covers unbundled runs (`swift run`), where the asset catalog is absent; symbols are templates.
-            image = NSImage(systemSymbolName: isActive ? "cup.and.heat.waves.fill" : "cup.and.heat.waves", accessibilityDescription: nil)
-        }
+        let image = icon.image()
         button.image = image
-        // Offers a template copy for the highlighted state, so macOS can tint the colored active icon there.
+        // Offers a template copy for the highlighted state, so macOS can tint the colored icons there.
         let highlightedImage = image?.copy() as? NSImage
         highlightedImage?.isTemplate = true
         button.alternateImage = highlightedImage
-        button.setAccessibilityValue(isActive ? "Stay awake on" : "Stay awake off")
+        button.setAccessibilityValue(icon.accessibilityValue)
+        button.toolTip = icon.toolTip
     }
 }

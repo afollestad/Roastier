@@ -25,6 +25,7 @@ To release, bump both, commit as `Release Caffeinate vX.Y.Z`, and push to `main`
 - The tag is pushed only after signing, verification, notarization, stapling, packaging, and release-note generation succeed.
 - Release notes are written by Copilot CLI from the commits since the previous release (or the whole history for the first one), limited to user-facing changes and grouped by theme.
 - A newer canary cancels an unfinished one. Release and dry run builds are never cancelled.
+- Running copies of Caffeinate offer each published release within about 6 hours; the in-app updater ignores drafts and prereleases.
 
 Download a canary (signed but not notarized, so clear the quarantine):
 

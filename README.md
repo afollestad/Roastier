@@ -46,4 +46,6 @@ cp -R .build/app/release/Caffeinate.app /Applications/
 
 Turn on **Launch at login** from the installed copy so the login item points at `/Applications`.
 
+Caffeinate keeps itself up to date. It checks GitHub Releases at launch and every 6 hours, and downloads a new version in the background. A dot on the menu bar icon marks an available update and turns green once it's downloaded; click **Restart to Update** in the popover to install it, and an active **Stay awake** session resumes after the restart. Updates replace the app in place, so keep it somewhere writable, such as `/Applications`.
+
 See `RELEASING.md` for how releases are built and published.

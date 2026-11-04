@@ -10,7 +10,10 @@ public final class AwakeController {
     public typealias Sleep = @Sendable (Duration) async throws -> Void
 
     static let durationDefaultsKey = "awakeDurationStep"
+    static let relaunchSessionDefaultsKey = "relaunchSession"
     static let assertionReason = "Caffeinate: Stay awake"
+    /// A saved session older than this is from a relaunch that never happened, not one in progress.
+    static let relaunchSessionMaxAge: TimeInterval = 60
 
     public private(set) var isActive = false
     /// When the current session ends; `nil` while inactive or indefinite.
@@ -73,20 +76,9 @@ public final class AwakeController {
 
     /// Holds whichever assertions macOS grants; stays off only when it grants none.
     public func start() {
-        guard !isActive else {
+        guard holdAssertions() else {
             return
         }
-        assertionIDs = PowerAssertionKind.allCases.compactMap { kind in
-            let id = assertionClient.create(kind, reason: Self.assertionReason)
-            if id == nil {
-                logger.error("Failed to create power assertion \(String(describing: kind), privacy: .public)")
-            }
-            return id
-        }
-        guard !assertionIDs.isEmpty else {
-            return
-        }
-        isActive = true
         scheduleExpiry()
     }
 
@@ -101,6 +93,57 @@ public final class AwakeController {
         isActive = false
     }
 
+    /// Records the active session, so the relaunch after an app update can resume it; a no-op while inactive.
+    public func saveSessionForRelaunch() {
+        guard isActive else {
+            return
+        }
+        var session: [String: Date] = ["savedAt": now()]
+        session["deadline"] = deadline
+        defaults.set(session, forKey: Self.relaunchSessionDefaultsKey)
+    }
+
+    /// Resumes a session saved moments ago by `saveSessionForRelaunch()`, keeping a timed session's original deadline.
+    /// Always clears the saved session.
+    public func resumeSessionAfterRelaunch() {
+        guard let session = defaults.dictionary(forKey: Self.relaunchSessionDefaultsKey) else {
+            return
+        }
+        defaults.removeObject(forKey: Self.relaunchSessionDefaultsKey)
+        guard let savedAt = session["savedAt"] as? Date,
+              abs(now().timeIntervalSince(savedAt)) <= Self.relaunchSessionMaxAge else {
+            return
+        }
+        guard let deadline = session["deadline"] as? Date else {
+            currentDuration = .indefinite
+            start()
+            return
+        }
+        guard deadline > now(), holdAssertions(), let wait = tick(until: deadline) else {
+            return
+        }
+        scheduleCountdown(until: deadline, firstWait: wait)
+    }
+
+    /// Takes every assertion macOS grants and returns whether the session is now on.
+    private func holdAssertions() -> Bool {
+        guard !isActive else {
+            return false
+        }
+        assertionIDs = PowerAssertionKind.allCases.compactMap { kind in
+            let id = assertionClient.create(kind, reason: Self.assertionReason)
+            if id == nil {
+                logger.error("Failed to create power assertion \(String(describing: kind), privacy: .public)")
+            }
+            return id
+        }
+        guard !assertionIDs.isEmpty else {
+            return false
+        }
+        isActive = true
+        return true
+    }
+
     private func scheduleExpiry() {
         expiryTask?.cancel()
         expiryTask = nil
@@ -108,12 +151,16 @@ public final class AwakeController {
             deadline = nil
             return
         }
-        let deadline = now().addingTimeInterval(interval)
+        // Sessions are whole steps long, so the first step ends one step from now.
+        scheduleCountdown(until: now().addingTimeInterval(interval), firstWait: AwakeDuration.stepInterval)
+    }
+
+    private func scheduleCountdown(until deadline: Date, firstWait: TimeInterval) {
+        expiryTask?.cancel()
         self.deadline = deadline
         let sleep = self.sleep
         expiryTask = Task { [weak self] in
-            // Sessions are whole steps long, so the first step ends one step from now.
-            var wait = AwakeDuration.stepInterval
+            var wait = firstWait
             while true {
                 do {
                     try await sleep(.seconds(wait))

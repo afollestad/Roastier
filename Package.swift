@@ -10,7 +10,7 @@ let package = Package(
     targets: [
         .target(
             name: "CaffeinateKit",
-            exclude: ["AGENTS.md", "CLAUDE.md"]
+            exclude: ["AGENTS.md", "CLAUDE.md", "Updates/AGENTS.md", "Updates/CLAUDE.md"]
         ),
         .executableTarget(
             name: "Caffeinate",

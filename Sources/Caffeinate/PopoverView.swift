@@ -10,6 +10,7 @@ struct PopoverView: View {
 
     let awake: AwakeController
     let launchAtLogin: LaunchAtLogin
+    let updates: AppUpdateManager
 
     var body: some View {
         GlassEffectContainer {
@@ -18,6 +19,10 @@ struct PopoverView: View {
                 Divider()
                 stayAwakeRow
                 durationSection
+                if let phase = UpdateCardPhase(updates) {
+                    Divider()
+                    PopoverUpdateCard(phase: phase, updates: updates)
+                }
                 Divider()
                 footer
             }
@@ -125,6 +130,40 @@ struct PopoverView: View {
                 .buttonStyle(.link)
                 .font(.caption)
             }
+            versionLine
         }
+    }
+
+    private var versionLine: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(spacing: 4) {
+                Group {
+                    Text("Version \(updates.currentVersionString ?? "unknown")")
+                    Text("·")
+                    if updates.isChecking {
+                        ProgressView()
+                            .controlSize(.mini)
+                        Text("Checking…")
+                    } else if updates.manualCheckFeedback == .upToDate {
+                        Text("Up to date")
+                    }
+                }
+                .foregroundStyle(.secondary)
+                if !updates.isChecking && updates.manualCheckFeedback != .upToDate {
+                    Button("Check for Updates") {
+                        Task {
+                            await updates.forceCheck()
+                        }
+                    }
+                    .buttonStyle(.link)
+                }
+            }
+            if case .unavailable(let reason) = updates.manualCheckFeedback {
+                Text(reason.displayDescription)
+                    .foregroundStyle(.orange)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .font(.caption)
     }
 }
