@@ -63,20 +63,17 @@ private extension StatusItemIcon {
     @MainActor
     func baseImage() -> NSImage? {
         if let named = NSImage(named: isActive ? StatusItemController.activeImageName : StatusItemController.idleImageName) {
-            // The active icon keeps its own teal/mint colors; macOS tints the idle one.
-            named.isTemplate = !isActive
+            named.isTemplate = true
             return named
         }
         // Covers unbundled runs (`swift run`), where the asset catalog is absent; symbols are templates.
         return NSImage(systemSymbolName: isActive ? "cup.and.heat.waves.fill" : "cup.and.heat.waves", accessibilityDescription: nil)
     }
 
-    /// A template image can't carry a colored dot, so the badged image is not a template. It tints the idle glyph
-    /// with `labelColor` itself; the drawing handler runs at draw time, so that color and the active icon's asset
-    /// variant follow the menu bar's current appearance.
+    /// A template image can't carry a colored dot, so the badged image is not a template.
+    /// It tints the glyph with `labelColor` at draw time to follow the menu bar's current appearance.
     @MainActor
     func badged(_ base: NSImage, color: NSColor) -> NSImage {
-        let tintsBase = base.isTemplate
         let image = NSImage(size: base.size, flipped: false) { rect in
             guard let context = NSGraphicsContext.current?.cgContext else {
                 return false
@@ -84,10 +81,8 @@ private extension StatusItemIcon {
             // A transparency layer keeps the tint from compositing onto whatever is already drawn beneath the icon.
             context.beginTransparencyLayer(auxiliaryInfo: nil)
             base.draw(in: rect)
-            if tintsBase {
-                NSColor.labelColor.set()
-                rect.fill(using: .sourceAtop)
-            }
+            NSColor.labelColor.set()
+            rect.fill(using: .sourceAtop)
             color.setFill()
             NSBezierPath(ovalIn: NSRect(
                 x: rect.maxX - Self.badgeDiameter,

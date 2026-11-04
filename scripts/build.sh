@@ -39,6 +39,7 @@ if ! actool_output=$(xcrun actool "$repo_root/Resources/Assets.xcassets" "$repo_
   --platform macosx \
   --minimum-deployment-target 26.0 \
   --app-icon AppIcon \
+  --accent-color AccentColor \
   --output-partial-info-plist "$partial_plist" \
   --output-format human-readable-text \
   --errors --warnings 2>&1); then

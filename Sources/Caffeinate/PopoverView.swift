@@ -6,7 +6,7 @@ import SwiftUI
 /// The status item's popover. It relies on the system's Liquid Glass popover background, so it adds none of its own.
 struct PopoverView: View {
     /// The app icon's background fill.
-    private static let teal = Color(.displayP3, red: 0.17, green: 0.49, blue: 0.46)
+    private static let coffee = Color(.sRGB, red: 149 / 255, green: 107 / 255, blue: 71 / 255)
 
     let awake: AwakeController
     let launchAtLogin: LaunchAtLogin
@@ -41,7 +41,7 @@ struct PopoverView: View {
                 // Not `.white`: inactive windows drop the glass tint, which would leave white on light glass.
                 .foregroundStyle(awake.isActive ? .primary : .secondary)
                 .frame(width: 44, height: 44)
-                .glassEffect(.regular.tint(awake.isActive ? Self.teal : nil), in: .circle)
+                .glassEffect(.regular.tint(awake.isActive ? Self.coffee : nil), in: .circle)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text("Caffeinate")

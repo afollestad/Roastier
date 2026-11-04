@@ -65,7 +65,7 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
         }
         let image = icon.image()
         button.image = image
-        // Offers a template copy for the highlighted state, so macOS can tint the colored icons there.
+        // A template copy also lets macOS tint icons carrying colored update badges when highlighted.
         let highlightedImage = image?.copy() as? NSImage
         highlightedImage?.isTemplate = true
         button.alternateImage = highlightedImage
