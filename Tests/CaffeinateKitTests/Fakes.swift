@@ -57,4 +57,17 @@ final class FakeLoginItemService: LoginItemService {
 @MainActor
 final class FakeClock {
     var now = Date(timeIntervalSinceReferenceDate: 0)
+    /// Extra time the next `sleep` lets pass, simulating a Mac asleep mid-session.
+    var oversleep: TimeInterval = 0
+    /// Runs after each `sleep` advances `now`.
+    var onSleep: (() -> Void)?
+    private(set) var sleeps: [Duration] = []
+
+    /// Returns at once, as if the requested time (plus any `oversleep`) passed.
+    func sleep(for duration: Duration) {
+        sleeps.append(duration)
+        now.addTimeInterval(TimeInterval(duration / .seconds(1)) + oversleep)
+        oversleep = 0
+        onSleep?()
+    }
 }

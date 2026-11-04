@@ -50,16 +50,65 @@ final class AwakeControllerTests {
     }
 
     @Test
-    func timedSessionExpires() async {
-        let controller = makeController(sleep: { _ in })
+    func timedSessionCountsDownToIndefinite() async {
+        let controller = makeController(sleep: advancingSleep)
         controller.duration = AwakeDuration(step: 6)
+        var steps: [Int] = []
+        clock.onSleep = { [weak controller] in
+            steps.append(controller?.duration.step ?? -1)
+        }
 
         controller.start()
         #expect(controller.deadline == clock.now.addingTimeInterval(1_800))
 
         await controller.expiryTask?.value
+        #expect(clock.sleeps == Array(repeating: .seconds(300), count: 6))
+        #expect(steps == [6, 5, 4, 3, 2, 1])
+        #expect(controller.duration == .indefinite)
+        #expect(makeController().duration == .indefinite)
         #expect(!controller.isActive)
         #expect(controller.deadline == nil)
+        #expect(client.held.isEmpty)
+    }
+
+    @Test
+    func countdownCatchesUpAfterOversleeping() async {
+        let controller = makeController(sleep: advancingSleep)
+        controller.duration = AwakeDuration(step: 12)
+        var steps: [Int] = []
+        clock.onSleep = { [weak controller] in
+            steps.append(controller?.duration.step ?? -1)
+        }
+        clock.oversleep = 1_200
+
+        controller.start()
+        let deadline = controller.deadline
+
+        await controller.expiryTask?.value
+        #expect(steps == [12, 7, 6, 5, 4, 3, 2, 1])
+        #expect(clock.now == deadline)
+        #expect(!controller.isActive)
+    }
+
+    @Test
+    func stopMidCountdownKeepsTimeLeft() async {
+        let controller = makeController(sleep: advancingSleep)
+        controller.duration = AwakeDuration(step: 6)
+        var sleepCount = 0
+        clock.onSleep = { [weak controller] in
+            sleepCount += 1
+            if sleepCount == 3 {
+                controller?.stop()
+            }
+        }
+
+        controller.start()
+        let task = controller.expiryTask
+
+        await task?.value
+        #expect(!controller.isActive)
+        #expect(controller.duration == AwakeDuration(step: 4))
+        #expect(makeController().duration == AwakeDuration(step: 4))
         #expect(client.held.isEmpty)
     }
 
@@ -83,13 +132,8 @@ final class AwakeControllerTests {
 
     @Test
     func cancelledExpiryDoesNotStopRescheduledSession() async {
-        // The replaced session's 1-hour sleep finishes despite cancellation; the rescheduled 30-minute one keeps waiting.
-        let controller = makeController(sleep: { duration in
-            guard duration != .seconds(3_600) else {
-                return
-            }
-            try await Task.sleep(for: .seconds(3_600))
-        })
+        // Sleeps return normally once cancelled, so the replaced session wakes while the rescheduled one keeps waiting.
+        let controller = makeController(sleep: { _ in try? await Task.sleep(for: .seconds(3_600)) })
         controller.duration = AwakeDuration(step: 12)
         controller.start()
         let replacedTask = controller.expiryTask
@@ -97,6 +141,7 @@ final class AwakeControllerTests {
         controller.duration = AwakeDuration(step: 6)
         await replacedTask?.value
         #expect(controller.isActive)
+        #expect(controller.duration == AwakeDuration(step: 6))
         #expect(client.held.count == PowerAssertionKind.allCases.count)
     }
 
@@ -141,7 +186,13 @@ final class AwakeControllerTests {
         #expect(controller.deadline == nil)
     }
 
-    /// The default sleep never finishes on its own, so expiry happens only when a test chooses an instant sleep.
+    /// Returns at once, advancing `clock` by the requested time.
+    private var advancingSleep: AwakeController.Sleep {
+        let clock = clock
+        return { await clock.sleep(for: $0) }
+    }
+
+    /// The default sleep never finishes on its own, so expiry happens only when a test chooses `advancingSleep`.
     private func makeController(
         sleep: @escaping AwakeController.Sleep = { _ in try await Task.sleep(for: .seconds(3_600)) }
     ) -> AwakeController {

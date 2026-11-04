@@ -15,17 +15,29 @@ public final class AwakeController {
     public private(set) var isActive = false
     /// When the current session ends; `nil` while inactive or indefinite.
     public private(set) var deadline: Date?
-    /// Persisted across launches. Changing it while active restarts the countdown from now.
+    /// The slider position, persisted across launches. A timed session counts it down to the time left, rounded up to
+    /// a whole step, and returns it to indefinite once time is up. Setting it while active restarts the countdown from
+    /// now.
     public var duration: AwakeDuration {
-        didSet {
+        get {
+            currentDuration
+        }
+        set {
             // A rounded slider binding re-sends the same step on every drag tick.
-            guard duration != oldValue else {
+            guard newValue != currentDuration else {
                 return
             }
-            defaults.set(duration.step, forKey: Self.durationDefaultsKey)
+            currentDuration = newValue
             if isActive {
                 scheduleExpiry()
             }
+        }
+    }
+
+    /// The countdown writes this directly so its ticks don't restart the session.
+    private var currentDuration: AwakeDuration {
+        didSet {
+            defaults.set(currentDuration.step, forKey: Self.durationDefaultsKey)
         }
     }
 
@@ -37,8 +49,8 @@ public final class AwakeController {
     /// Internal so tests can await expiry instead of sleeping.
     @ObservationIgnored private(set) var expiryTask: Task<Void, Never>?
 
-    /// - Parameter sleep: Defaults to `Task.sleep`, whose continuous clock keeps counting while the Mac sleeps, so a
-    ///   session still ends on time after a lid-closed nap.
+    /// - Parameter sleep: Defaults to `Task.sleep`, whose continuous clock keeps counting while the Mac sleeps, so the
+    ///   countdown wakes promptly after a lid-closed nap and catches up from `now`.
     public init(
         assertionClient: any PowerAssertionClient = IOKitPowerAssertionClient(),
         defaults: UserDefaults = .standard,
@@ -49,7 +61,7 @@ public final class AwakeController {
         self.defaults = defaults
         self.now = now
         self.sleep = sleep
-        duration = AwakeDuration(step: defaults.integer(forKey: Self.durationDefaultsKey))
+        currentDuration = AwakeDuration(step: defaults.integer(forKey: Self.durationDefaultsKey))
     }
 
     isolated deinit {
@@ -96,19 +108,37 @@ public final class AwakeController {
             deadline = nil
             return
         }
-        deadline = now().addingTimeInterval(interval)
+        let deadline = now().addingTimeInterval(interval)
+        self.deadline = deadline
         let sleep = self.sleep
         expiryTask = Task { [weak self] in
-            do {
-                try await sleep(.seconds(interval))
-            } catch {
-                return
+            // Sessions are whole steps long, so the first step ends one step from now.
+            var wait = AwakeDuration.stepInterval
+            while true {
+                do {
+                    try await sleep(.seconds(wait))
+                } catch {
+                    return
+                }
+                guard !Task.isCancelled, let next = self?.tick(until: deadline) else {
+                    return
+                }
+                wait = next
             }
-            guard !Task.isCancelled else {
-                return
-            }
-            self?.stop()
         }
+    }
+
+    /// Counts `duration` down to the time left and returns the wait until its next step, or ends the session and
+    /// returns `nil` once time is up. Measuring from `deadline` each tick catches up after a nap spanning several steps.
+    private func tick(until deadline: Date) -> TimeInterval? {
+        let remaining = deadline.timeIntervalSince(now())
+        guard remaining > 0 else {
+            currentDuration = .indefinite
+            stop()
+            return nil
+        }
+        currentDuration = AwakeDuration(roundingUp: remaining)
+        return remaining - TimeInterval(currentDuration.step - 1) * AwakeDuration.stepInterval
     }
 }
 

@@ -27,6 +27,19 @@ struct AwakeDurationTests {
         #expect(duration.isIndefinite == (testCase.interval == nil))
     }
 
+    @Test(arguments: [
+        (-5, 0),
+        (0, 0),
+        (0.5, 1),
+        (300, 1),
+        (300.5, 2),
+        (1_800, 6),
+        (50_000, 144)
+    ] as [(TimeInterval, Int)])
+    func roundsIntervalUpToWholeStep(_ interval: TimeInterval, _ step: Int) {
+        #expect(AwakeDuration(roundingUp: interval).step == step)
+    }
+
     @Test
     func clampsOutOfRangeSteps() {
         #expect(AwakeDuration(step: -1) == .indefinite)

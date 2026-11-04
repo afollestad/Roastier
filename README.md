@@ -6,7 +6,7 @@
   </a>
 </p>
 
-A macOS menu bar app that keeps your Mac awake, equivalent to `caffeinate -dims`. Click the coffee cup to open a Liquid Glass popover with a **Stay awake** toggle and a duration slider: **Indefinite** at the far left, then 5-minute steps up to 12 hours. The cup fills with color while your Mac is being kept awake.
+A macOS menu bar app that keeps your Mac awake, equivalent to `caffeinate -dims`. Click the coffee cup to open a Liquid Glass popover with a **Stay awake** toggle and a duration slider: **Indefinite** at the far left, then 5-minute steps up to 12 hours. During a timed session the slider counts down, returning to **Indefinite** when time is up. The cup fills with color while your Mac is being kept awake.
 
 While on, it holds the same IOKit power assertions as `caffeinate -dims`:
 
