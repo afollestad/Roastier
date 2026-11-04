@@ -1,12 +1,21 @@
-# Roastier
+<p align="center">
+  <picture>
+    <source srcset="docs/images/app-icon-dark.png" media="(prefers-color-scheme: dark)">
+    <img src="docs/images/app-icon-light.png" alt="" width="128" height="128">
+  </picture>
+</p>
 
-<p>
+<h1 align="center">Roastier</h1>
+
+<p align="center">A macOS menu bar app that keeps your Mac awake.</p>
+
+<p align="center">
   <a href="https://github.com/afollestad/Roastier/releases/latest/download/Roastier.app.zip">
     <img src=".github/download-macos.svg?v=240x42" alt="Download Roastier for macOS (latest release)" width="240" height="42">
   </a>
 </p>
 
-A macOS menu bar app that keeps your Mac awake, equivalent to `caffeinate -dims`. Click the coffee cup to open a Liquid Glass popover with a **Stay awake** toggle and a duration slider: **Indefinite** at the far left, then 5-minute steps up to 12 hours. During a timed session the slider counts down, returning to **Indefinite** when time is up. The cup is filled while your Mac is being kept awake and outlined while idle; macOS supplies its tint to suit the menu bar.
+Roastier is equivalent to `caffeinate -dims`. Click the coffee cup to open a Liquid Glass popover with a **Stay awake** toggle and a duration slider: **Indefinite** at the far left, then 5-minute steps up to 12 hours. During a timed session the slider counts down, returning to **Indefinite** when time is up. The cup is filled while your Mac is being kept awake and outlined while idle; macOS supplies its tint to suit the menu bar.
 
 While on, it holds the same IOKit power assertions as `caffeinate -dims`:
 
