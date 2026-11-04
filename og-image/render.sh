@@ -5,8 +5,8 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 CHROME="${CHROME_PATH:-/Applications/Google Chrome.app/Contents/MacOS/Google Chrome}"
-if [[ ! -x "$CHROME" ]]; then
-    echo "Chrome not found; set CHROME_PATH." >&2
+if ! command -v "$CHROME" >/dev/null; then
+    echo "Chrome not found at $CHROME; set CHROME_PATH." >&2
     exit 1
 fi
 
