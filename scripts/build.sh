@@ -32,7 +32,7 @@ cp Resources/Info.plist "$app/Contents/"
 
 # SwiftPM can't compile asset catalogs or Icon Composer documents, so actool builds Assets.car and AppIcon.icns.
 # Pass absolute paths: actool runs in a shared daemon that resolves relative ones against its own working directory.
-partial_plist=$(mktemp -t caffeinate-actool)
+partial_plist=$(mktemp -t roastier-actool)
 trap 'rm -f "$partial_plist"' EXIT
 if ! actool_output=$(xcrun actool "$repo_root/Resources/Assets.xcassets" "$repo_root/Resources/AppIcon.icon" \
   --compile "$app/Contents/Resources" \

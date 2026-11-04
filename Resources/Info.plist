@@ -5,15 +5,15 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Caffeinate</string>
+	<string>Roastier</string>
 	<key>CFBundleExecutable</key>
-	<string>Caffeinate</string>
+	<string>Roastier</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.afollestad.caffeinate</string>
+	<string>com.afollestad.roastier</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Caffeinate</string>
+	<string>Roastier</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

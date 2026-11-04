@@ -1,8 +1,8 @@
-# Caffeinate
+# Roastier
 
 <p>
-  <a href="https://github.com/afollestad/caffeinate-menubar/releases/latest/download/Caffeinate.app.zip">
-    <img src=".github/download-macos.svg?v=240x42" alt="Download Caffeinate for macOS (latest release)" width="240" height="42">
+  <a href="https://github.com/afollestad/Roastier/releases/latest/download/Roastier.app.zip">
+    <img src=".github/download-macos.svg?v=240x42" alt="Download Roastier for macOS (latest release)" width="240" height="42">
   </a>
 </p>
 
@@ -27,7 +27,7 @@ While on, it holds the same IOKit power assertions as `caffeinate -dims`:
 
 ```sh
 ./scripts/setup.sh    # install tools and the pre-commit hook
-./scripts/build.sh    # build .build/app/debug/Caffeinate.app (--release for an optimized build)
+./scripts/build.sh    # build .build/app/debug/Roastier.app (--release for an optimized build)
 ./scripts/run.sh      # build, then (re)launch the app
 ./scripts/test.sh     # run unit tests (optionally pass a filter)
 ./scripts/lint.sh     # run SwiftLint (--fix to autocorrect)
@@ -37,15 +37,15 @@ This is a SwiftPM package; `scripts/build.sh` assembles the `.app` bundle and co
 
 ## Install
 
-Download `Caffeinate.app.zip` from the latest [GitHub Release](https://github.com/afollestad/caffeinate-menubar/releases/latest), unzip it, and move `Caffeinate.app` to `/Applications`. To build it yourself:
+Download `Roastier.app.zip` from the latest [GitHub Release](https://github.com/afollestad/Roastier/releases/latest), unzip it, and move `Roastier.app` to `/Applications`. To build it yourself:
 
 ```sh
 ./scripts/build.sh --release
-cp -R .build/app/release/Caffeinate.app /Applications/
+cp -R .build/app/release/Roastier.app /Applications/
 ```
 
 Turn on **Launch at login** from the installed copy so the login item points at `/Applications`.
 
-Caffeinate keeps itself up to date. It checks GitHub Releases at launch and every 6 hours, and downloads a new version in the background. A dot on the menu bar icon marks an available update and turns green once it's downloaded; click **Restart to Update** in the popover to install it, and an active **Stay awake** session resumes after the restart. Updates replace the app in place, so keep it somewhere writable, such as `/Applications`.
+Roastier keeps itself up to date. It checks GitHub Releases at launch and every 6 hours, and downloads a new version in the background. A dot on the menu bar icon marks an available update and turns green once it's downloaded; click **Restart to Update** in the popover to install it, and an active **Stay awake** session resumes after the restart. Updates replace the app in place, so keep it somewhere writable, such as `/Applications`.
 
 See `RELEASING.md` for how releases are built and published.

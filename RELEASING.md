@@ -1,6 +1,6 @@
-# Releasing Caffeinate
+# Releasing Roastier
 
-Caffeinate ships as a GitHub Release with a `Caffeinate.app.zip` asset containing a universal, Developer ID–signed, notarized `Caffeinate.app`, plus `Caffeinate.dSYMs.zip` for symbolicating crash reports.
+Roastier ships as a GitHub Release with a `Roastier.app.zip` asset containing a universal, Developer ID–signed, notarized `Roastier.app`, plus `Roastier.dSYMs.zip` for symbolicating crash reports.
 
 ## Versioning
 
@@ -9,7 +9,7 @@ The version lives in `Resources/Info.plist`:
 - `CFBundleShortVersionString`: the `X.Y.Z` release version.
 - `CFBundleVersion`: an integer build number that must increase with every release.
 
-To release, bump both, commit as `Release Caffeinate vX.Y.Z`, and push to `main`. CI creates the tag; never push release tags yourself.
+To release, bump both, commit as `Release Roastier vX.Y.Z`, and push to `main`. CI creates the tag; never push release tags yourself.
 
 ## Release Builds
 
@@ -18,21 +18,21 @@ To release, bump both, commit as `Release Caffeinate vX.Y.Z`, and push to `main`
 | Mode | Trigger | Notarizes | Result |
 | --- | --- | --- | --- |
 | `release` | Push to `main` when the current version has no `vX.Y.Z` tag on origin | Yes | Tag and GitHub Release |
-| `canary` | Any other push to `main`, including the push that creates `main` | No | Actions artifact holding `Caffeinate.app` |
-| `dry-run` | Manual `workflow_dispatch` | Yes | Actions artifact holding `Caffeinate.app.zip` |
+| `canary` | Any other push to `main`, including the push that creates `main` | No | Actions artifact holding `Roastier.app` |
+| `dry-run` | Manual `workflow_dispatch` | Yes | Actions artifact holding `Roastier.app.zip` |
 
 - A push publishes the current version whenever its tag is missing, which covers the first release and retrying a failed one.
 - The tag is pushed only after signing, verification, notarization, stapling, packaging, and release-note generation succeed.
 - Release notes are written by Copilot CLI from the commits since the previous release (or the whole history for the first one), limited to user-facing changes and grouped by theme.
 - A newer canary cancels an unfinished one. Release and dry run builds are never cancelled.
-- Running copies of Caffeinate offer each published release within about 6 hours; the in-app updater ignores drafts and prereleases.
+- Running copies of Roastier offer each published release within about 6 hours; the in-app updater ignores drafts and prereleases.
 
 Download a canary (signed but not notarized, so clear the quarantine):
 
 ```sh
 gh run list --workflow Release --branch main --limit 5
-gh run download <run-id> --repo afollestad/caffeinate-menubar -D ~/Downloads
-xattr -dr com.apple.quarantine ~/Downloads/Caffeinate-canary-*/Caffeinate.app
+gh run download <run-id> --repo afollestad/Roastier -D ~/Downloads
+xattr -dr com.apple.quarantine ~/Downloads/Roastier-canary-*/Roastier.app
 ```
 
 Rehearse a release without publishing: `gh workflow run Release --ref main`.
@@ -60,8 +60,8 @@ None of these values are app-specific, so other apps on the same team can use th
 3. Set the remaining signing secrets:
 
    ```sh
-   gh secret set MACOS_KEYCHAIN_PASSWORD --body "$(openssl rand -hex 24)" -R afollestad/caffeinate-menubar
-   gh secret set APPLE_TEAM_ID -R afollestad/caffeinate-menubar   # prompts for the team ID
+   gh secret set MACOS_KEYCHAIN_PASSWORD --body "$(openssl rand -hex 24)" -R afollestad/Roastier
+   gh secret set APPLE_TEAM_ID -R afollestad/Roastier   # prompts for the team ID
    ```
 
 ### Notarization API key
@@ -70,9 +70,9 @@ None of these values are app-specific, so other apps on the same team can use th
 2. Upload it with its key ID and the issuer ID shown on that page:
 
    ```sh
-   base64 -i AuthKey_<KEY_ID>.p8 | gh secret set APP_STORE_CONNECT_API_KEY_P8_BASE64 -R afollestad/caffeinate-menubar
-   gh secret set APP_STORE_CONNECT_KEY_ID -R afollestad/caffeinate-menubar      # prompts for the key ID
-   gh secret set APP_STORE_CONNECT_ISSUER_ID -R afollestad/caffeinate-menubar   # prompts for the issuer ID
+   base64 -i AuthKey_<KEY_ID>.p8 | gh secret set APP_STORE_CONNECT_API_KEY_P8_BASE64 -R afollestad/Roastier
+   gh secret set APP_STORE_CONNECT_KEY_ID -R afollestad/Roastier      # prompts for the key ID
+   gh secret set APP_STORE_CONNECT_ISSUER_ID -R afollestad/Roastier   # prompts for the issuer ID
    ```
 
 3. Store the `.p8` somewhere safe, such as a password manager, then delete the download.

@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 SCRIPT_PATH = Path(__file__).with_name("generate-release-notes.sh")
-REPOSITORY = "afollestad/caffeinate-menubar"
+REPOSITORY = "afollestad/Roastier"
 PREVIOUS_TAG = "v0.1.0"
 TAG_NAME = "v0.1.1"
 FULL_CHANGELOG = f"**Full Changelog**: https://github.com/{REPOSITORY}/compare/{PREVIOUS_TAG}...{TAG_NAME}"
@@ -152,7 +152,7 @@ class GenerateReleaseNotesTests(unittest.TestCase):
         self.assertEqual(self.notes(), f"{FULL_CHANGELOG}\n")
 
     def test_release_commits_are_not_candidates(self) -> None:
-        self.commit("Release Caffeinate v0.1.1")
+        self.commit("Release Roastier v0.1.1")
 
         result = self.run_generator()
 

@@ -33,7 +33,7 @@ def resolve_notes_base(previous_tag: str) -> str:
         return previous_tag
 
     # A rewritten history can orphan the tag; its release commit still marks where the notes start.
-    expected_subject = f"Release Caffeinate {previous_tag}"
+    expected_subject = f"Release Roastier {previous_tag}"
     for line in git("log", "--first-parent", "--format=%H%x09%s", "HEAD").stdout.splitlines():
         commit, separator, subject = line.partition("\t")
         if separator and subject == expected_subject:

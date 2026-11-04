@@ -49,7 +49,7 @@ class ResolvePreviousReleaseTests(unittest.TestCase):
     def test_uses_highest_lower_semantic_version_tag_on_linear_history(self) -> None:
         self.commit("Initial")
         self.git("tag", "v0.1.9")
-        self.commit("Release Caffeinate v0.1.10")
+        self.commit("Release Roastier v0.1.10")
         self.git("tag", "v0.1.10")
         self.git("tag", "not-a-release")
         self.commit("Next change")
@@ -79,8 +79,8 @@ class ResolvePreviousReleaseTests(unittest.TestCase):
         self.commit("Old v0.1.2 release")
         self.git("tag", "v0.1.2")
         self.git("switch", base_branch)
-        self.commit("Release Caffeinate v0.1.1")
-        expected_notes_base = self.commit("Release Caffeinate v0.1.2")
+        self.commit("Release Roastier v0.1.1")
+        expected_notes_base = self.commit("Release Roastier v0.1.2")
         self.commit("Current patch change")
 
         result, outputs = self.resolve("v0.1.3")

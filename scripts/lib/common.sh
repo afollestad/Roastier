@@ -5,7 +5,7 @@ export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 repo_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 cd "$repo_root"
 
-app_name=Caffeinate
+app_name=Roastier
 
 # The assembled bundle for a build configuration (`debug` or `release`). Release builds put its dSYM at "<bundle>.dSYM".
 app_path() {

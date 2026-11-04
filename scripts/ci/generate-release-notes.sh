@@ -23,7 +23,7 @@ candidate_commit_count=$(git log \
   --format='%s' \
   --extended-regexp \
   --invert-grep \
-  --grep='^Release Caffeinate v[0-9]+\.[0-9]+\.[0-9]+$' \
+  --grep='^Release Roastier v[0-9]+\.[0-9]+\.[0-9]+$' \
   "$range" | wc -l | tr -d '[:space:]')
 
 prompt=$(printf '%s\n' \

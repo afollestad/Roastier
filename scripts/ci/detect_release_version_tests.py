@@ -43,7 +43,7 @@ class DetectReleaseVersionTests(unittest.TestCase):
         info_plist = self.repo / "Resources" / "Info.plist"
         info_plist.parent.mkdir(exist_ok=True)
         info_plist.write_bytes(plistlib.dumps({
-            "CFBundleExecutable": "Caffeinate",
+            "CFBundleExecutable": "Roastier",
             "CFBundleShortVersionString": version,
             "CFBundleVersion": build,
         }))
@@ -87,8 +87,8 @@ class DetectReleaseVersionTests(unittest.TestCase):
         self.assertEqual(outputs["build"], "11")
         self.assertEqual(outputs["tag"], "v0.2.2")
         # A canary publishes nothing, so its artifact name is the only record of what it was built from.
-        self.assertEqual(outputs["artifact_name"], f"Caffeinate-canary-0.2.2-11-{head[:7]}")
-        self.assertEqual(outputs["dsym_artifact_name"], f"Caffeinate-canary-0.2.2-11-{head[:7]}-dSYMs")
+        self.assertEqual(outputs["artifact_name"], f"Roastier-canary-0.2.2-11-{head[:7]}")
+        self.assertEqual(outputs["dsym_artifact_name"], f"Roastier-canary-0.2.2-11-{head[:7]}-dSYMs")
 
     def test_builds_a_canary_when_the_previous_info_plist_is_unreadable(self) -> None:
         for before_sha in ("", ALL_ZEROS_SHA):
@@ -131,8 +131,8 @@ class DetectReleaseVersionTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(outputs["mode"], "dry-run")
-        self.assertEqual(outputs["artifact_name"], f"Caffeinate-dry-run-0.2.3-12-{head[:7]}")
-        self.assertEqual(outputs["dsym_artifact_name"], f"Caffeinate-dry-run-0.2.3-12-{head[:7]}-dSYMs")
+        self.assertEqual(outputs["artifact_name"], f"Roastier-dry-run-0.2.3-12-{head[:7]}")
+        self.assertEqual(outputs["dsym_artifact_name"], f"Roastier-dry-run-0.2.3-12-{head[:7]}-dSYMs")
 
     def test_fails_when_bumping_to_a_version_that_is_already_tagged(self) -> None:
         previous = self.commit_version("0.2.2", "11")

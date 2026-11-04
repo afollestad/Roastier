@@ -49,7 +49,7 @@ jobs:
       group: release-${{ needs.detect.outputs.mode == 'canary' && format('canary-{0}', github.ref) || github.run_id }}
       cancel-in-progress: ${{ needs.detect.outputs.mode == 'canary' }}
     env:
-      APP_NAME: Caffeinate
+      APP_NAME: Roastier
       # Keep the runner label and Xcode selection aligned with ci.yml so releases use the validated toolchain.
       DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
     steps:

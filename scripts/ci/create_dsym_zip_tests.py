@@ -27,11 +27,11 @@ class CreateDsymZipTests(unittest.TestCase):
         self.release_path = root / "release"
         self.github_output = root / "github_output"
         self.github_output.touch()
-        self.app_dsym = self.export_path / "Caffeinate.app.dSYM"
+        self.app_dsym = self.export_path / "Roastier.app.dSYM"
         dwarf = self.app_dsym / "Contents" / "Resources" / "DWARF"
         dwarf.mkdir(parents=True)
-        shutil.copy(SHIPPED_BINARY, dwarf / "Caffeinate")
-        self.app_binary = self.export_path / "Caffeinate.app" / "Contents" / "MacOS" / "Caffeinate"
+        shutil.copy(SHIPPED_BINARY, dwarf / "Roastier")
+        self.app_binary = self.export_path / "Roastier.app" / "Contents" / "MacOS" / "Roastier"
         self.app_binary.parent.mkdir(parents=True)
         shutil.copy(SHIPPED_BINARY, self.app_binary)
 
@@ -43,7 +43,7 @@ class CreateDsymZipTests(unittest.TestCase):
         environment.update(
             EXPORT_PATH=str(self.export_path),
             RELEASE_PATH=str(self.release_path),
-            APP_NAME="Caffeinate",
+            APP_NAME="Roastier",
             GITHUB_OUTPUT=str(self.github_output),
         )
         return subprocess.run([str(SCRIPT_PATH)], check=False, capture_output=True, text=True, env=environment)
@@ -62,7 +62,7 @@ class CreateDsymZipTests(unittest.TestCase):
         zip_path = Path(self.outputs()["dsym_path"])
         # `--keepParent` keeps the bundle name, so an extracted asset is a dSYM `atos -o` accepts.
         names = zipfile.ZipFile(zip_path).namelist()
-        self.assertIn("Caffeinate.app.dSYM/Contents/Resources/DWARF/Caffeinate", names)
+        self.assertIn("Roastier.app.dSYM/Contents/Resources/DWARF/Roastier", names)
 
     def test_rejects_a_dsym_from_a_different_build(self) -> None:
         shutil.copy(OTHER_BUILD_BINARY, self.app_binary)

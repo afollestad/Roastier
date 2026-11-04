@@ -4,7 +4,6 @@ source "$(dirname "$0")/lib/common.sh"
 
 "$repo_root/scripts/build.sh"
 
-# `-x` matches case-sensitively, so `/usr/bin/caffeinate` processes are never touched.
 if pgrep -x "$app_name" >/dev/null; then
   pkill -x "$app_name"
   attempt=0

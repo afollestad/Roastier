@@ -2,24 +2,24 @@
 import PackageDescription
 
 let package = Package(
-    name: "caffeinate-menubar",
+    name: "roastier",
     platforms: [.macOS(.v26)],
     products: [
-        .executable(name: "Caffeinate", targets: ["Caffeinate"])
+        .executable(name: "Roastier", targets: ["Roastier"])
     ],
     targets: [
         .target(
-            name: "CaffeinateKit",
+            name: "RoastierKit",
             exclude: ["AGENTS.md", "CLAUDE.md", "Updates/AGENTS.md", "Updates/CLAUDE.md"]
         ),
         .executableTarget(
-            name: "Caffeinate",
-            dependencies: ["CaffeinateKit"],
+            name: "Roastier",
+            dependencies: ["RoastierKit"],
             exclude: ["AGENTS.md", "CLAUDE.md"]
         ),
         .testTarget(
-            name: "CaffeinateKitTests",
-            dependencies: ["CaffeinateKit"]
+            name: "RoastierKitTests",
+            dependencies: ["RoastierKit"]
         )
     ]
 )

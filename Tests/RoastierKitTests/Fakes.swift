@@ -1,0 +1,73 @@
+import Foundation
+import IOKit.pwr_mgt
+import ServiceManagement
+@testable import RoastierKit
+
+@MainActor
+final class FakePowerAssertionClient: PowerAssertionClient {
+    var failingKinds: Set<PowerAssertionKind> = []
+    private(set) var created: [PowerAssertionKind] = []
+    private(set) var released: [IOPMAssertionID] = []
+    private(set) var held: [IOPMAssertionID: PowerAssertionKind] = [:]
+    private var nextID: IOPMAssertionID = 1
+
+    func create(_ kind: PowerAssertionKind, reason: String) -> IOPMAssertionID? {
+        guard !failingKinds.contains(kind) else {
+            return nil
+        }
+        let id = nextID
+        nextID += 1
+        created.append(kind)
+        held[id] = kind
+        return id
+    }
+
+    func release(_ id: IOPMAssertionID) {
+        released.append(id)
+        held[id] = nil
+    }
+}
+
+@MainActor
+final class FakeLoginItemService: LoginItemService {
+    struct Failure: Error {}
+
+    var status: SMAppService.Status = .notRegistered
+    var failure: Failure?
+    private(set) var registerCount = 0
+    private(set) var unregisterCount = 0
+
+    func register() throws {
+        registerCount += 1
+        if let failure {
+            throw failure
+        }
+        status = .enabled
+    }
+
+    func unregister() throws {
+        unregisterCount += 1
+        if let failure {
+            throw failure
+        }
+        status = .notRegistered
+    }
+}
+
+@MainActor
+final class FakeClock {
+    var now = Date(timeIntervalSinceReferenceDate: 0)
+    /// Extra time the next `sleep` lets pass, simulating a Mac asleep mid-session.
+    var oversleep: TimeInterval = 0
+    /// Runs after each `sleep` advances `now`.
+    var onSleep: (() -> Void)?
+    private(set) var sleeps: [Duration] = []
+
+    /// Returns at once, as if the requested time (plus any `oversleep`) passed.
+    func sleep(for duration: Duration) {
+        sleeps.append(duration)
+        now.addTimeInterval(TimeInterval(duration / .seconds(1)) + oversleep)
+        oversleep = 0
+        onSleep?()
+    }
+}

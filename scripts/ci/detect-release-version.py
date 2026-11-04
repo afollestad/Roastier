@@ -83,7 +83,7 @@ if should_release and version_changed and previous_build and previous_build.isdi
 # Releases attach their ZIP and dSYMs to the GitHub Release; every other mode uploads artifacts
 # named after the run, so a download says which commit it came from.
 short_sha = os.environ.get("GITHUB_SHA", "")[:7]
-artifact_name = "" if mode == "release" else f"Caffeinate-{mode}-{version}-{build}-{short_sha}"
+artifact_name = "" if mode == "release" else f"Roastier-{mode}-{version}-{build}-{short_sha}"
 dsym_artifact_name = f"{artifact_name}-dSYMs" if artifact_name else ""
 
 with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
