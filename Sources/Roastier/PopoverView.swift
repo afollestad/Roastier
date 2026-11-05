@@ -158,6 +158,13 @@ struct PopoverView: View {
                     }
                     .buttonStyle(.link)
                 }
+                Text("·")
+                    .foregroundStyle(.secondary)
+                Button("About") {
+                    AboutPanel.show()
+                }
+                .buttonStyle(.link)
+                .accessibilityLabel("About Roastier")
             }
             if case .unavailable(let reason) = updates.manualCheckFeedback {
                 Text(reason.displayDescription)
