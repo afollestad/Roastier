@@ -45,4 +45,46 @@ struct AwakeDurationTests {
         #expect(AwakeDuration(step: -1) == .indefinite)
         #expect(AwakeDuration(step: 200).step == AwakeDuration.maxStep)
     }
+
+    @Test
+    func sliderStepsRunFromIndefiniteToMaxInIncreasingOrder() {
+        let steps = AwakeDuration.sliderSteps
+        #expect(steps.count == 33)
+        #expect(steps.first == 0)
+        #expect(steps.last == AwakeDuration.maxStep)
+        #expect(zip(steps, steps.dropFirst()).allSatisfy { $0 < $1 })
+    }
+
+    @Test(arguments: [
+        (-1, "Indefinite"),
+        (0, "Indefinite"),
+        (1, "5 min"),
+        (12, "1 hr"),
+        (13, "1 hr 15 min"),
+        (20, "3 hr"),
+        (21, "3 hr 30 min"),
+        (26, "6 hr"),
+        (27, "7 hr"),
+        (32, "12 hr"),
+        (99, "12 hr")
+    ] as [(Int, String)])
+    func mapsSliderPositionToStop(_ position: Int, _ label: String) {
+        #expect(AwakeDuration(sliderPosition: position).label == label)
+    }
+
+    @Test
+    func sliderPositionRoundTripsThroughEveryStop() {
+        for position in 0...AwakeDuration.maxSliderPosition {
+            #expect(AwakeDuration(sliderPosition: position).sliderPosition == Double(position))
+        }
+    }
+
+    @Test(arguments: [
+        (39, 20.5),
+        (75, 26.25),
+        (78, 26.5)
+    ] as [(Int, Double)])
+    func interpolatesSliderPositionBetweenStops(_ step: Int, _ position: Double) {
+        #expect(AwakeDuration(step: step).sliderPosition == position)
+    }
 }

@@ -15,7 +15,7 @@
   </a>
 </p>
 
-Roastier is equivalent to `caffeinate -dims`. Click the coffee cup to open a Liquid Glass popover with a **Stay awake** toggle and a duration slider: **Indefinite** at the far left, then 5-minute steps up to 12 hours. During a timed session the slider counts down, returning to **Indefinite** when time is up. The cup is filled while your Mac is being kept awake and outlined while idle; macOS supplies its tint to suit the menu bar.
+Roastier is equivalent to `caffeinate -dims`. Click the coffee cup to open a Liquid Glass popover with a **Stay awake** toggle and a duration slider: **Indefinite** at the far left, then 5-minute steps up to an hour, widening to hourly steps toward 12 hours. During a timed session the slider counts down, returning to **Indefinite** when time is up. The cup is filled while your Mac is being kept awake and outlined while idle; macOS supplies its tint to suit the menu bar.
 
 While on, it holds the same IOKit power assertions as `caffeinate -dims`:
 

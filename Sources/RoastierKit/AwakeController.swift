@@ -18,7 +18,7 @@ public final class AwakeController {
     public private(set) var isActive = false
     /// When the current session ends; `nil` while inactive or indefinite.
     public private(set) var deadline: Date?
-    /// The slider position, persisted across launches. A timed session counts it down to the time left, rounded up to
+    /// The selected duration, persisted across launches. A timed session counts it down to the time left, rounded up to
     /// a whole step, and returns it to indefinite once time is up. Setting it while active restarts the countdown from
     /// now.
     public var duration: AwakeDuration {

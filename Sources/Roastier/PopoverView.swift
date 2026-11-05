@@ -88,13 +88,14 @@ struct PopoverView: View {
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
             }
-            // Rounding in the binding snaps to 5-minute steps without the dense tick marks a `step:` slider draws.
+            // Rounding in the binding snaps to `AwakeDuration.sliderSteps`, whose uneven spacing a `step:` slider can't
+            // express.
             Slider(
                 value: Binding(
-                    get: { Double(awake.duration.step) },
-                    set: { awake.duration = AwakeDuration(step: Int($0.rounded())) }
+                    get: { awake.duration.sliderPosition },
+                    set: { awake.duration = AwakeDuration(sliderPosition: Int($0.rounded())) }
                 ),
-                in: 0...Double(AwakeDuration.maxStep)
+                in: 0...Double(AwakeDuration.maxSliderPosition)
             ) {
                 Text("Duration")
             } minimumValueLabel: {
