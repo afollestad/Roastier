@@ -23,7 +23,7 @@ Built per the global `static-site-rules` skill, as a sibling of the Alveary, Chr
 1. `./scripts/build.sh --release` on `main`, copy the bundle elsewhere, set its `CFBundleIdentifier` to `com.afollestad.roastier.shots` and ad-hoc re-sign it, so its defaults and power assertions never touch an installed copy.
 2. Seed the state through the relaunch-resume key, then launch within 60 seconds: `defaults write com.afollestad.roastier.shots relaunchSession -dict savedAt -date <now>` for indefinite, adding `deadline -date <now + 87m50s>` for timed (it reads 1 hr 30 min), and nothing for idle.
 3. Put a plain backdrop window behind the popover (`#f5f5f5` light, `#1e1e1e` dark), switch the system appearance to match (an app-level `-AppleInterfaceStyle` doesn't reach the popover), and open it with System Events: `click UI element 1 of menu bar 1` of the process.
-4. `screencapture -l<id>` renders Liquid Glass over nothing and comes out gray, so take the pixels from `screencapture -R<window bounds>` and the alpha from `screencapture -o -l<id>`, multiplied together in a short CoreGraphics script.
+4. Take `<id>` and the bounds from `CGWindowListCopyWindowInfo`: the popover is the app's only on-screen window (layer 25), since the status item isn't listed under the app. `screencapture -l<id>` renders Liquid Glass over nothing and comes out gray, so take the pixels from `screencapture -R<window bounds>` and the alpha from `screencapture -o -l<id>`, multiplied together in a short CoreGraphics script.
 5. `cwebp -lossless -z 9 -alpha_q 100`. Every capture shares one size, repeated in `.popover-shot`'s `aspect-ratio` and each `<img>`'s `width`/`height`.
 
 ### Icons
