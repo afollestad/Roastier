@@ -23,12 +23,15 @@ html {
     text-size-adjust: 100%;
 }
 
+/* break-word only splits a word too long for a line of its own, as on a phone
+   with enlarged text, and leaves every layout's widths alone. */
 body {
     margin: 0;
     font-family: var(--font);
     line-height: 1.5;
     background: var(--bg);
     color: var(--fg);
+    overflow-wrap: break-word;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -59,6 +62,12 @@ a {
 code {
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: .9em;
+}
+
+/* A command's flag keeps its dash, so a wrapping heading breaks at the space
+   before it rather than after the hyphen. */
+.flag {
+    white-space: nowrap;
 }
 
 a:focus-visible,
@@ -223,10 +232,12 @@ button:focus-visible {
     filter: drop-shadow(0 .6rem 1.2rem var(--icon-shadow));
 }
 
+/* Its floor gives way to 20vw only on a phone with enlarged text, where the
+   name would otherwise be wider than the page. */
 .hero-copy h1 {
     display: inline-block;
     margin-top: 1.5rem;
-    font-size: clamp(2.75rem, 7vw, 4.25rem);
+    font-size: clamp(min(2.75rem, 20vw), 7vw, 4.25rem);
     font-weight: 700;
     letter-spacing: -.035em;
     line-height: 1.1;
@@ -263,20 +274,27 @@ button:focus-visible {
     margin-top: 2rem;
 }
 
+/* A minimum height and wrapping labels, so a button too wide for a phone with
+   enlarged text grows taller instead; a flex row wraps whole buttons first. */
 .btn-primary,
 .btn-ghost {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: .5rem;
-    height: 3rem;
-    padding: 0 1.3rem;
+    min-height: 3rem;
+    max-width: 100%;
+    padding: .4rem 1.3rem;
     border-radius: .55rem;
     font-size: .95rem;
     font-weight: 600;
     text-decoration: none;
-    white-space: nowrap;
     transition: transform .3s var(--spring);
+}
+
+.btn-primary svg,
+.btn-ghost svg {
+    flex-shrink: 0;
 }
 
 /* Filled with AccentColor, the icon's coffee. */
@@ -302,6 +320,7 @@ button:focus-visible {
     flex-direction: column;
     align-items: flex-start;
     line-height: 1.15;
+    text-align: left;
 }
 
 /* Full opacity: white faded on the light theme's coffee drops below 4.5:1. */
@@ -373,9 +392,11 @@ button:focus-visible {
     margin-right: auto;
 }
 
+/* Its floor gives way to 10vw only on a phone with enlarged text, so a long
+   word like "caffeinate" still fits a line whole. */
 .section-feature h2 {
     margin-top: 1rem;
-    font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+    font-size: clamp(min(1.9rem, 10vw), 3.5vw, 2.6rem);
     font-weight: 700;
     letter-spacing: -.03em;
     line-height: 1.1;
