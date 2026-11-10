@@ -14,6 +14,10 @@ Built per the global `static-site-rules` skill, as a sibling of the Alveary, Chr
 
 `styles/index-light.css` and `styles/index-dark.css` hold the tokens and the glow; `styles/index-common.css` holds everything else. Both theme sheets ship media-scoped, as do the `theme-color` metas and every `<picture>` dark `<source>`, so the page follows the OS without JavaScript. `scripts/dark-mode.js` only applies a stored toggle override, and repeats each sheet's `--bg`, so change them together.
 
+## Download
+
+`scripts/platform-gate.js` greys out the download for visitors not on a Mac before first paint, keyed on `#release-link`; it is Reqling's and Alveary's `gh-pages` copy verbatim, so change the three together.
+
 ## Images
 
 ### Screenshots
