@@ -4,6 +4,7 @@
 - One imperative rule per bullet, ~40 words max. Rationale is at most one clause naming the failure mode; no history, narratives, or rejected alternatives.
 - Put each rule in the narrowest `AGENTS.md` that covers the affected files. One owner per rule: cross-reference instead of restating.
 - Delete or update bullets made stale in the same change, and keep every path a bullet names resolvable from the repo root.
+- Keep `README.md` for people: what Roastier does, installing it, and building it. Agent rules go here or in doc comments; keep implementation detail and change history out of it.
 - Give a new scoped folder its own `AGENTS.md`, a sibling `ln -s AGENTS.md CLAUDE.md` (the symlink is what loads it), and, inside a SwiftPM target, an `exclude` entry in `Package.swift` for both files.
 
 ## Scoped Guidance
