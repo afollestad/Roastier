@@ -398,6 +398,14 @@ button:focus-visible {
     order: 2;
 }
 
+/* Centered against shorter text, a popover's arrow rises above its chip and
+   would peek over the fold alone. translate drops it without moving the text,
+   since it takes no part in layout. 2rem is what #stay-awake's arrow needs to
+   reach its chip at the narrowest two-column width. */
+.feature-split .popover-shot {
+    translate: 0 2rem;
+}
+
 .feature-text {
     max-width: 28rem;
     justify-self: center;
@@ -407,8 +415,10 @@ button:focus-visible {
     text-align: center;
 }
 
+/* Sets feature copy in two or three lines on desktop, at the width the
+   sibling sites share. */
 .section-centered .feature-copy {
-    max-width: 36rem;
+    max-width: 42rem;
     margin-left: auto;
     margin-right: auto;
 }
@@ -456,6 +466,7 @@ button:focus-visible {
 .details {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    row-gap: 2.5rem;
     max-width: 56rem;
     margin: 0 auto;
 }
@@ -465,7 +476,8 @@ button:focus-visible {
     text-align: center;
 }
 
-.detail + .detail {
+/* Every column but a row's first. */
+.detail:not(:nth-child(3n + 1)) {
     border-left: 1px solid var(--hairline);
 }
 
@@ -617,6 +629,10 @@ button:focus-visible {
         order: 0;
     }
 
+    .feature-split .popover-shot {
+        translate: none;
+    }
+
     .feature-text {
         max-width: 34rem;
     }
@@ -626,6 +642,7 @@ button:focus-visible {
 @media (max-width: 45em) {
     .details {
         grid-template-columns: 1fr;
+        row-gap: 0;
         max-width: 28rem;
     }
 
@@ -633,8 +650,11 @@ button:focus-visible {
         padding: 1.25rem 0;
     }
 
-    .detail + .detail {
+    .detail:not(:nth-child(3n + 1)) {
         border-left: none;
+    }
+
+    .detail + .detail {
         border-top: 1px solid var(--hairline);
     }
 

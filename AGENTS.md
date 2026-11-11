@@ -8,7 +8,7 @@ Built per the global `static-site-rules` skill, as a sibling of the Alveary, Chr
 
 - Colors come from the app on `main`: `--accent` is `AccentColor` (`#956b47`, the `AppIcon.icon` fill) in light and the dark icon's latte cup (`#d6b38b`) in dark; `--accent-text` in light is the coffee line in the icon's cup. Keep them in step with the app and the contrast ratios in the theme sheets' comments.
 - The motif is steam rising up the hero's sides, drawn like the wisps over the icon's cup: an inline SVG in `index.html` and `og-image/og-image.html` (keep both copies equal), stroked in `--steam`.
-- Feature sections pair a popover capture with its text, alternating sides; `#details` is plain columns between hairlines, and `#under-the-hood` mirrors the assertions table in `main`'s `README.md`.
+- Feature sections pair a popover capture with its text, alternating sides, and `#under-the-hood` mirrors the assertions table in `main`'s `README.md`.
 
 ## Theming
 
