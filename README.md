@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
     <source srcset="docs/images/app-icon-dark.png" media="(prefers-color-scheme: dark)">
-    <img src="docs/images/app-icon-light.png" alt="" width="128" height="128">
+    <img src="docs/images/app-icon-light.png" alt="" width="96" height="96">
   </picture>
 </p>
 
@@ -15,7 +15,7 @@
   </a>
 </p>
 
-Roastier is equivalent to `caffeinate -dims`. Click the coffee cup to open a Liquid Glass popover with a **Stay awake** toggle and a duration slider: **Indefinite** at the far left, then 5-minute steps up to an hour, widening to hourly steps toward 12 hours. During a timed session the slider counts down, returning to **Indefinite** when time is up. The cup is filled while your Mac is being kept awake and outlined while idle; macOS supplies its tint to suit the menu bar.
+Click the coffee cup for a **Stay awake** toggle and a duration slider, from **Indefinite** up to 12 hours, which counts down during a timed session. The cup is filled while your Mac is kept awake.
 
 While on, it holds the same IOKit power assertions as `caffeinate -dims`:
 
@@ -26,13 +26,15 @@ While on, it holds the same IOKit power assertions as `caffeinate -dims`:
 | `-m` | `PreventDiskIdle` |
 | `-s` | `PreventSystemSleep` (AC power only) |
 
-## Requirements
+## Install
 
-- macOS 26 or later
-- Xcode 26 or later
-- Homebrew (for SwiftLint and xcsift)
+Roastier needs macOS 26 or later. Download `Roastier.app.zip` from the [latest release](https://github.com/afollestad/Roastier/releases/latest), unzip it, and move `Roastier.app` to `/Applications` before turning on **Launch at login**, so the login item points there.
+
+It keeps itself up to date, checking at launch and every 6 hours. A dot on the menu bar icon marks an update and turns green once it's downloaded; **Restart to Update** in the popover installs it, and an active **Stay awake** session resumes afterward. Updates replace the app in place, so keep it somewhere writable.
 
 ## Development
+
+Building needs Xcode 26 or later, and Homebrew for SwiftLint and xcsift.
 
 ```sh
 ./scripts/setup.sh    # install tools and the pre-commit hook
@@ -42,19 +44,4 @@ While on, it holds the same IOKit power assertions as `caffeinate -dims`:
 ./scripts/lint.sh     # run SwiftLint (--fix to autocorrect)
 ```
 
-This is a SwiftPM package; `scripts/build.sh` assembles the `.app` bundle and compiles its assets with `actool`.
-
-## Install
-
-Download `Roastier.app.zip` from the latest [GitHub Release](https://github.com/afollestad/Roastier/releases/latest), unzip it, and move `Roastier.app` to `/Applications`. To build it yourself:
-
-```sh
-./scripts/build.sh --release
-cp -R .build/app/release/Roastier.app /Applications/
-```
-
-Turn on **Launch at login** from the installed copy so the login item points at `/Applications`.
-
-Roastier keeps itself up to date. It checks GitHub Releases at launch and every 6 hours, and downloads a new version in the background. A dot on the menu bar icon marks an available update and turns green once it's downloaded; click **Restart to Update** in the popover to install it, and an active **Stay awake** session resumes after the restart. Updates replace the app in place, so keep it somewhere writable, such as `/Applications`.
-
-See `RELEASING.md` for how releases are built and published.
+Launch through `run.sh` rather than `swift run` or Xcode, since only the bundle `build.sh` assembles has the app's assets. [RELEASING.md](RELEASING.md) covers how releases are built and published.
